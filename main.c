@@ -40,7 +40,14 @@ int main(void) {
     __enable_interrupt();
 
     while(1){
-
+    	//every second not moved the bombs will move.
+    	if(timerCount == 2){
+    		//pause the timer
+    		TACTL &= ~(MC1|MC0);
+    		seed = generateMines(mines, seed);
+    		//continue the timer
+    		TACTL |= MC1;
+    	}
     	if(player == 0xC7){
     		TACTL &= ~TAIE;
     		clearLCD();
