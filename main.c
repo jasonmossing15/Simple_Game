@@ -21,7 +21,7 @@ char timerCount = 0;
 char player = 0;
 char gameover = 0;
 unsigned char mines[2];
-int seed;
+unsigned int seed;
 
 void clearTimer(){
 	timerCount = 0;
@@ -33,7 +33,7 @@ int main(void) {
 
     initSPI();
     initLCD();
-    seed = rand();
+    seed = prand(1234);
     newGame();
 
     btnINIT();
@@ -41,14 +41,7 @@ int main(void) {
     __enable_interrupt();
 
     while(1){
-    	//every second not moved the mines will move.
-    	/*if(timerCount == 2){
-    		//pause the timer
-    		TACTL &= ~(MC1|MC0);
-    		seed = generateMines(mines, seed);
-    		//continue the timer
-    		TACTL |= MC1;
-    	}*/
+
     	if(player == 0xC7){
     		TACTL &= ~TAIE;
     		clearLCD();

@@ -65,7 +65,7 @@ char didPlayerHitMine(unsigned char player, unsigned char mines[NUM_MINES]){
 	return hit;
 }
 
-int generateMines(unsigned char mines[NUM_MINES],int seed){
+int generateMines(unsigned char mines[NUM_MINES],unsigned int seed){
 	unsigned char winnable = 0;
 	while(!winnable){
 		seed = prand(seed);
