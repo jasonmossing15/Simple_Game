@@ -3,6 +3,7 @@
 #include "buttons/button.h"
 #include "SimpleGame.h"
 #include "clkSpeed/clkSpeed.h"
+#include "Random/rand.h"
 
 /*
  * main.c
@@ -11,11 +12,15 @@ void timerINIT();
 void btnINIT();
 void moveProperPlayer(char buttonToTest);
 void Reset(char buttonToTest);
+void testAndRespondToButtonPush(char buttonToTest);
+void newGame();
 
 char btnPush = 0;
 char timerCount = 0;
 char player = 0;
 char gameover = 0;
+unsigned char mines[2];
+int seed;
 
 void clearTimer(){
 	timerCount = 0;
@@ -25,11 +30,11 @@ void clearTimer(){
 int main(void) {
     WDTCTL = WDTPW | WDTHOLD;	// Stop watchdog timer
 
-    player = initPlayer();
     initSPI();
     initLCD();
-    clearLCD();
-    printPlayer(player);
+    seed = rand();
+    newGame();
+
     btnINIT();
     timerINIT();
     __enable_interrupt();
@@ -46,7 +51,7 @@ int main(void) {
     		gameover = 1;
     		_delay_cycles(100000);
     	}
-    	if(timerCount >= 4){
+    	if(timerCount >= 4 || didPlayerHitMine(player, mines)){
     		TACTL &= ~TAIE;
     		clearLCD();
     		line1Cursor();
@@ -56,6 +61,7 @@ int main(void) {
     		gameover = 1;
     		_delay_cycles(100000);
     	}
+
     }
 
 	return 0;
@@ -126,10 +132,7 @@ void Reset(char buttonToTest){
     {
         if (buttonToTest & P2IES)
         {
-        	gameover = 0;
-        	clearLCD();
-        	player = initPlayer();
-        	printPlayer(player);
+        	newGame();
             clearTimer();
             TACTL |= TAIE;
         } else
@@ -140,6 +143,15 @@ void Reset(char buttonToTest){
         P2IES ^= buttonToTest;
         P2IFG &= ~buttonToTest;
     }
+}
+
+void newGame(){
+	gameover = 0;
+	clearLCD();
+	player = initPlayer();
+	printPlayer(player);
+	seed = generateMines(mines, seed);
+	printMines(mines);
 }
 
 #pragma vector = TIMER0_A1_VECTOR
