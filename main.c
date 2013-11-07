@@ -14,6 +14,7 @@ void moveProperPlayer(char buttonToTest);
 void Reset(char buttonToTest);
 void testAndRespondToButtonPush(char buttonToTest);
 void newGame();
+void gameOver();
 
 char btnPush = 0;
 char timerCount = 0;
@@ -40,14 +41,14 @@ int main(void) {
     __enable_interrupt();
 
     while(1){
-    	//every second not moved the bombs will move.
-    	if(timerCount == 2){
+    	//every second not moved the mines will move.
+    	/*if(timerCount == 2){
     		//pause the timer
     		TACTL &= ~(MC1|MC0);
     		seed = generateMines(mines, seed);
     		//continue the timer
     		TACTL |= MC1;
-    	}
+    	}*/
     	if(player == 0xC7){
     		TACTL &= ~TAIE;
     		clearLCD();
@@ -58,15 +59,20 @@ int main(void) {
     		gameover = 1;
     		_delay_cycles(100000);
     	}
-    	if(timerCount >= 4 || didPlayerHitMine(player, mines)){
+    	if(didPlayerHitMine(player, mines) && gameover == 0){
     		TACTL &= ~TAIE;
     		clearLCD();
     		line1Cursor();
-    		writeString("Game");
+    		writeString("KABOOM!");
     		line2Cursor();
-    		writeString("Over!");
-    		gameover = 1;
-    		_delay_cycles(100000);
+    		writeString("Hit Mine");
+    		_delay_cycles(200000);
+    		gameOver();
+
+    	}
+    	if(timerCount >= 4){
+    		TACTL &= ~TAIE;
+    		gameOver();
     	}
 
     }
@@ -159,6 +165,16 @@ void newGame(){
 	printPlayer(player);
 	seed = generateMines(mines, seed);
 	printMines(mines);
+}
+
+void gameOver(){
+	clearLCD();
+	line1Cursor();
+	writeString("Game");
+	line2Cursor();
+	writeString("Over!");
+	gameover = 1;
+	_delay_cycles(100000);
 }
 
 #pragma vector = TIMER0_A1_VECTOR
