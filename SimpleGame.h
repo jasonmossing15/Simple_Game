@@ -17,37 +17,29 @@
 
 #define NUM_MINES 2
 
-//
 // Initializes player to starting position on board.
-//
 unsigned char initPlayer();
 
-//
 // Prints the player marker (*) at the player location passed in.
-//
 void printPlayer(unsigned char player);
 
-//
 // Clears the location passed in.
-//
 void clearPlayer(unsigned char player);
 
-//
 // Given a player's current position and a direction, returns an updated player position.
-//
 unsigned char movePlayer(unsigned char player, unsigned char direction);
 
-//
 // Returns true if the position passed in is the winning game position.
-//
 char didPlayerWin(unsigned char player);
 
- //Functions which may prove useful in achieving A-Functionality.
-
+//check to see if the player runs into a mine
 char didPlayerHitMine(unsigned char player, unsigned char mines[NUM_MINES]);
-int generateMines(unsigned char mines[NUM_MINES],unsigned int seed);
-void printMines(unsigned char mines[NUM_MINES]);
 
+//generates two random mines
+int generateMines(unsigned char mines[NUM_MINES],unsigned int seed);
+
+//prints the two mines. the mines are shown as 'X'
+void printMines(unsigned char mines[NUM_MINES]);
 
 
 #endif /* SIMPLEGAME_H_ */

@@ -89,9 +89,11 @@ void printMines(unsigned char mines[NUM_MINES]){
 char isGameWinnable(unsigned char mines[NUM_MINES]){
 	char top = mines[0];
 	char bottom = mines[1];
+	//& with 0x0f in order to check only the lower nibble
 	top = top & 0x0f;
 	bottom = bottom & 0x0f;
 
+	//checks up&down and the diagonals, if either of these occur the game is unwinnable
 	return !(top == bottom || top+1 == bottom || top-1 == bottom);
 }
 
